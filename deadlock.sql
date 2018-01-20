@@ -1,4 +1,4 @@
-```sql``
+~~~sql~~~
 1）用dba用户执行以下语句
 select username,lockwait,status,machine,program from v$session where sid in
 (select session_id from v$locked_object)
