@@ -25,6 +25,13 @@ SELECT s.username,l.OBJECT_ID,l.SESSION_ID,s.SERIAL#,
 l.ORACLE_USERNAME,l.OS_USER_NAME,l.PROCESS 
 FROM V$LOCKED_OBJECT l,V$SESSION S WHERE l.SESSION_ID=S.SID;
 
+select A.SQL_TEXT, B.USERNAME, C.OBJECT_ID, C.SESSION_ID, 
+       B.SERIAL#, C.ORACLE_USERNAME,C.OS_USER_NAME,C.Process,
+       ''''||C.Session_ID||','||B.SERIAL#||''''
+from v$sql A, v$session B, v$locked_object C
+where A.HASH_VALUE = B.SQL_HASH_VALUE and
+B.SID = C.Session_ID
+
 2）kill掉这个死锁的进程：
 
 　　alter system kill session ‘sid,serial#’; （其中sid=l.session_id）
@@ -40,15 +47,21 @@ ps -ef|grep spid
 
 　　其中spid是这个进程的进程号，kill掉这个Oracle进程
 
-from:http://southking.javaeye.com/blog/550832
+4.在OS上杀死这个进程（线程）：
 
+1)在unix上，用root身份执行命令:
 
+#kill -9 12345（即第3步查询出的spid）
 
+2)在windows（unix也适用）用orakill杀死线程，orakill是oracle提供的一个可执行命令，语法为：
 
-select A.SQL_TEXT, B.USERNAME, C.OBJECT_ID, C.SESSION_ID, 
-       B.SERIAL#, C.ORACLE_USERNAME,C.OS_USER_NAME,C.Process,
-       ''''||C.Session_ID||','||B.SERIAL#||''''
-from v$sql A, v$session B, v$locked_object C
-where A.HASH_VALUE = B.SQL_HASH_VALUE and
-B.SID = C.Session_ID
+orakill sid thread
+
+其中：
+
+sid：表示要杀死的进程属于的实例名
+
+thread：是要杀掉的线程号，即第3步查询出的spid。
+
+例：c:>orakill orcl 12345
 
