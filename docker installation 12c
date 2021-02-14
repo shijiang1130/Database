@@ -1,0 +1,51 @@
+docker run -d -p 8080:8080 -p 1521:1521 -v /my/oracle/data:/u01/app/oracle sath89/oracle-12c
+
+[root@-rac1 ~]# docker logs -f ffbeb07058449672c640ddb4e59b8376dae2e3b4dd54142871da7adbc069ee79
+
+ls: cannot access /u01/app/oracle/oradata: No such file or directory
+
+Database not initialized. Initializing database.
+
+Starting tnslsnr
+
+Copying database files
+
+Creating and starting Oracle instance
+
+Completing Database Creation
+
+Look at the log file "/u01/app/oracle/cfgtoollogs/dbca/xe/xe.log" for further details.
+
+Configuring Apex console
+
+Database initialized. Please visit http://#containeer:8080/em http://#containeer:8080/apex for extra configuration if needed
+
+Starting web management console
+
+PL/SQL procedure successfully completed.
+
+Starting import from '/docker-entrypoint-initdb.d':
+
+found file /docker-entrypoint-initdb.d//docker-entrypoint-initdb.d/*
+
+[IMPORT] /entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+
+Import finished
+
+Database ready to use. Enjoy! ;)
+
+[root@-rac1 ~]~$ docker exec -it 9e893d773494 /bin/bash
+root@9e893d773494:/# su oracle
+oracle@9e893d773494:~$ $ORACLE_HOME/bin/sqlplus / as sysdba
+
+SQL*Plus: Release 12.1.0.2.0 Production on Fri Feb 24 03:03:00 2017
+
+Copyright (c) 1982, 2014, Oracle.  All rights reserved.
+
+SQL>
+
+hostname: localhost
+port: 1521
+sid: xe
+username: system
+password: oracle
